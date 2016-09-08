@@ -1,0 +1,52 @@
+/*
+MIDI CONTROLLED LIGHTING WITH CC
+• Uses channels 22-27 (not commonly used) to control PWM pins
+• You can connect leds to the outputs, mosfets, or transistors to control higher wattage devices
+*/
+
+#include <MIDI.h>
+
+#define LEDPWM1 9
+#define LEDPWM2 6
+#define LEDPWM3 5
+#define LEDPWM4 3
+#define LEDPWM5 11
+#define LEDPWM6 10 
+
+MIDI_CREATE_DEFAULT_INSTANCE();
+
+void setup()
+{
+	MIDI.begin(16);//set channel number here
+	MIDI.setHandleControlChange(myCCFunction);
+}
+
+void loop()
+{
+	MIDI.read();
+}
+
+void myCCFunction(byte channel, byte number, byte value)
+{
+	switch (number)
+	{
+		case 22://cc #
+			analogWrite(LEDPWM1, value * 2);
+			break;
+		case 23:
+			analogWrite(LEDPWM2, value * 2);
+			break;
+		case 24:
+			analogWrite(LEDPWM3, value * 2);
+			break;
+		case 25:
+			analogWrite(LEDPWM4, value * 2);
+			break;
+		case 26:
+			analogWrite(LEDPWM5, value * 2);
+			break;
+		case 27:
+			analogWrite(LEDPWM6, value * 2);
+			break;
+	}
+}
