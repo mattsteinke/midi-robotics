@@ -1,0 +1,444 @@
+/* 
+MIDI PLAYER WITH SHUFFLE
+• Uses the MD_MIDIFile.h and SdFat.h lib
+• Play back midi files from an SD card and outputs the stream to the TX pin
+• The TX pin can then be send at MIDI (wth a few additional components) to a synth, drum machine, DAW, etc.
+• This is a great option if you do not want to use a computer for an installatioin or performance
+• This project uses one button to randomly select one of the files from the disk to play. 
+• It also remembers previousely played files so that it behaves more like a shuffle.
+
+Hardware:
+• SD card interface - change SD_SELECT for SPI comms - TEST THIS FIRST - Some SD cards don't work for some reason
+• 3 LEDs (optional) - to display current status and beat.
+• Change pin definitions for specific hardware setup - defined below.
+• Button to play back midi files 
+*/
+
+
+#include <SdFat.h>
+
+#include <MD_MIDIFile.h>
+
+
+#define	USE_MIDI	1
+
+
+#if USE_MIDI // set up for direct MIDI serial output
+
+
+#define	DEBUG(x)
+
+#define	DEBUGX(x)
+
+#define	SERIAL_RATE	31250
+
+
+#else // don't use MIDI to allow printing debug statements
+
+
+#define	DEBUG(x)	Serial.print(x)
+
+#define	DEBUGX(x)	Serial.print(x, HEX)
+
+#define	SERIAL_RATE	57600
+
+
+#endif // USE_MIDI
+
+
+// SD chip select pin for SPI comms.
+// Default SD chip select is the SPI SS pin (10).
+// Other hardware will be different as documented for that hardware.
+
+#define  SD_SELECT  53 // 53 for Mega
+
+// LED definitions for user indicators
+
+#define	READY_LED	7	// when finished
+
+#define SMF_ERROR_LED	6	// SMF error
+
+#define SD_ERROR_LED	5	// SD error
+
+#define	BEAT_LED	6	// toggles to the 'beat'
+
+#define	WAIT_DELAY	20	// ms
+
+#define	ARRAY_SIZE(a)	(sizeof(a)/sizeof(a[0]))
+
+#define BUT_PIN			11  // Play button pin
+
+boolean buttonOn = false; // storage for last button variable state
+
+boolean buttonState = HIGH; // storage for current button pin state
+
+int masterTempoAdjust;
+
+int masterTempop;
+
+long randNumber; //Random number variable
+
+boolean didUseList[ 11 ];
+
+int lastIndexUsed = -1;
+
+
+// The files in the tune list should be located on the SD card
+// or an error will occur opening the file and the next in the
+// list will be opened (skips errors).
+
+char *tuneList[] =
+
+{
+
+	"mag_1.mid",
+
+	"mag_2.mid",
+
+	"mag_3.mid",
+
+	"mag_4.mid",
+
+	"mag_5.mid",
+
+	"mag_6.mid",
+
+	"mag_7.mid",
+
+	"mag_8.mid",
+
+	"mag_9.mid",
+
+	"mag_10.mid",
+
+	"mag_11.mid",
+
+};
+
+
+SdFat	SD;
+
+MD_MIDIFile SMF;
+
+
+void midiCallback(midi_event *pev)
+
+// Called by the MIDIFile library when a file event needs to be processed
+// thru the midi communications interface.
+// This callback is set up in the setup() function.
+
+{
+
+#if USE_MIDI
+
+	if ((pev->data[0] >= 0x80) && (pev->data[0] <= 0xe0))
+
+	{
+		Serial.write(pev->data[0] | pev->channel);
+		Serial.write(&pev->data[1], pev->size - 1);
+	}
+
+	else
+
+		Serial.write(pev->data, pev->size);
+
+#endif
+
+
+	DEBUG("\nM T");
+
+	DEBUG(pev->track);
+
+	DEBUG(":  Ch ");
+
+	DEBUG(pev->channel + 1);
+
+	DEBUG(" Data ");
+
+	for (uint8_t i = 0; i < pev->size; i++)
+
+	{
+		DEBUGX(pev->data[i]);
+		DEBUG(' ');
+	}
+
+}
+
+
+boolean isListFull()
+{
+	int i, cnt;
+
+	cnt = 0;
+	for (i = 0; i < 11; ++i)
+	{
+		if ( didUseList[ i ] == true )
+		{
+			++cnt;
+		}
+	}
+	if ( cnt == 11 )
+	{
+		return true;
+	}
+	return false;
+} //
+
+
+void clearList()
+{
+	int i;
+	for (i = 0; i < 11; ++i)
+	{
+		didUseList[ i ] = false;
+	}
+} //
+
+
+boolean isInList( int num )
+{
+	if ( didUseList[ num ] == true )
+	{
+		return true;
+	}
+	return false;
+} //
+
+void sysexCallback(sysex_event *pev)
+
+// Called by the MIDIFile library when a system Exclusive (sysex) file event needs
+// to be processed through the midi communications interface. Most sysex events cannot
+// really be processed, so we just ignore it here.
+// This callback is set up in the setup() function.
+
+{
+
+	DEBUG("\nS T");
+
+	DEBUG(pev->track);
+
+	DEBUG(": Data ");
+
+	for (uint8_t i = 0; i < pev->size; i++)
+
+	{
+		DEBUGX(pev->data[i]);
+		DEBUG(' ');
+	}
+
+}
+
+
+void midiSilence(void)
+
+// Turn everything off on every channel.
+// Some midi files are badly behaved and leave notes hanging, so between songs turn
+// off all the notes and sound
+
+{
+
+	midi_event	ev;
+
+	// All sound off
+	// When All Sound Off is received all oscillators will turn off, and their volume
+	// envelopes are set to zero as soon as possible.
+
+	ev.size = 0;
+
+	ev.data[ev.size++] = 0xb0;
+
+	ev.data[ev.size++] = 120;
+
+	ev.data[ev.size++] = 0;
+
+	for (ev.channel = 0; ev.channel < 16; ev.channel++)
+
+		midiCallback(&ev);
+}
+
+
+void setup(void)
+
+{
+	randomSeed(analogRead(0));
+
+	// Set up LED pins
+
+	pinMode(READY_LED, OUTPUT);
+
+	pinMode(SD_ERROR_LED, OUTPUT);
+
+	pinMode(SMF_ERROR_LED, OUTPUT);
+
+	pinMode(BUT_PIN, INPUT_PULLUP); // play button - setup with the internal pullup resistor - LOW = ON, HIGH = OFF
+
+	Serial.begin(SERIAL_RATE);
+
+	DEBUG("\n[MidiFile Play List]");
+
+	// Initialize SD
+
+	if (!SD.begin(SD_SELECT, SPI_FULL_SPEED))
+
+	{
+
+		DEBUG("\nSD init fail!");
+		digitalWrite(SD_ERROR_LED, HIGH);
+		while (true) ;
+
+	}
+
+
+	// Initialize MIDIFile
+
+	SMF.begin(&SD);
+
+	SMF.setMidiHandler(midiCallback);
+
+	SMF.setSysexHandler(sysexCallback);
+
+	// Tempo Adjust
+
+	masterTempoAdjust = map(analogRead(A1), 0, 1024, 110, 0); // get an analog value from the pot and map it to masterTempoAdjust
+
+	SMF.setTempoAdjust( - masterTempoAdjust); // subtrack from current tempo speed (this player tends to be playback midi files too fast)
+
+	// 
+	
+	digitalWrite(READY_LED, HIGH);
+
+	delay(500);
+
+	digitalWrite(READY_LED, LOW);
+
+}
+
+void tickMetronome(void)
+
+// flash a LED to the beat
+
+{
+
+	static uint32_t	lastBeatTime = 0;
+
+	static boolean	inBeat = false;
+
+	uint16_t	beatTime;
+
+	beatTime = 60000 / SMF.getTempo();		// msec/beat = ((60sec/min)*(1000 ms/sec))/(beats/min)
+
+	if (!inBeat)
+
+	{
+		
+		if ((millis() - lastBeatTime) >= beatTime)
+
+		{
+
+			lastBeatTime = millis();
+			digitalWrite(BEAT_LED, HIGH);
+			inBeat = true;
+
+		}
+
+	}
+
+	else
+
+	{
+
+		if ((millis() - lastBeatTime) >= 100)	// keep the flash on for 100ms only
+
+		{
+			digitalWrite(BEAT_LED, LOW);
+			inBeat = false;
+		}
+
+	}
+
+}
+
+void loop(void)
+
+{
+
+	int  err;
+
+	buttonState = digitalRead(BUT_PIN);
+
+	if (buttonState == LOW) //if button has just been pressed
+
+	{
+		buttonOn = true;
+		delay(20);
+	}
+
+	if (buttonOn == true)
+
+	{
+
+		randNumber = random(12);
+
+		if ( isListFull() )
+		{
+			clearList();
+			if ( lastIndexUsed != -1 )
+			{
+				didUseList[ lastIndexUsed ] = true;
+			}
+		}
+
+		while ( isInList( randNumber ) )
+		{
+			randNumber = random(12);
+		}
+
+		SMF.setFilename(tuneList[randNumber]);
+
+		lastIndexUsed = randNumber;
+		didUseList[ lastIndexUsed ] = true;
+
+		//Serial.print("num selected:  ");
+		//Serial.println( randNumber);
+		// DEBUG( randNumber );
+
+		err = SMF.load();
+
+		// play the file
+
+		while (!SMF.isEOF())
+		{
+			if (SMF.getNextEvent())
+				tickMetronome();
+		}
+
+		// done with this one
+
+		SMF.close(); // Close the midi flile - Stop processing the midi file and reset it to start conditions
+
+		midiSilence();
+
+		// signal finish LED with a dignified pause
+
+		digitalWrite(READY_LED, HIGH);
+
+		delay(WAIT_DELAY);
+
+		buttonOn = false;
+
+		digitalWrite(READY_LED, LOW);
+
+	}
+
+
+	if (err != -1)
+
+	{
+
+		digitalWrite(SMF_ERROR_LED, HIGH);
+
+		delay(WAIT_DELAY);
+
+	}
+
+}
