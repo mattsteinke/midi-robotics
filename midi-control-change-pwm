@@ -1,0 +1,38 @@
+//Midi control change controls 16 output pins on an arduino using the SoftPWM library and the MIDI library
+//Note:A0-A3 are called as pins 14-16 and assigned to be digital outs
+
+#include <MIDI.h>
+#include <SoftPWM.h>
+
+int chan = 9; // set midi channel here
+int outPutPin[16] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17}; // pwm outputs (pin 14-17 = A0-A3)
+int cChange[16] = {20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35}; // cc inputs from midi
+
+MIDI_CREATE_DEFAULT_INSTANCE();
+
+void setup()
+{
+	MIDI.begin(chan); // set channel number here
+	MIDI.setHandleControlChange(myCCFunction);
+	SoftPWMBegin();
+	for (int i = 0; i < 16; i = i + 1)
+	{
+		SoftPWMSet(outPutPin[i], 0);
+	}
+}
+
+void loop()
+{
+	MIDI.read();
+}
+
+void myCCFunction(byte channel, byte number, byte value)
+{
+	for (int i = 0; i < 16; i = i + 1)
+	{
+		if (number == cChange[i]) // cc20-cc35
+		{
+			SoftPWMSet(outPutPin[i], value / 2); // update pwm value and scale 0-255 to 0-127 - 127=255/2
+		}
+	}
+}
