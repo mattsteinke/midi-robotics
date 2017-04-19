@@ -3,11 +3,11 @@
 int chan = 7;
 int ledPin = 13; //MIDI SIGNAL RECOGNIZED
 /////5 SERVOS
-Servo xtraServo7;
-Servo xtraServo8;
-Servo xtraServo9;
-Servo xtraServo10;
-Servo xtraServo11;
+Servo myServo1;
+Servo myServo2;
+Servo myServo3;
+Servo myServo4;
+Servo myServo5;
 int pwmVal26;
 int pwmVal27;
 int pwmVal28;
@@ -59,12 +59,12 @@ void midiLedFlash()
 }
 void setup()
 {
-	///XTRA SERVOS
-	xtraServo7.attach(SERVOPIN7);
-	xtraServo8.attach(SERVOPIN8);
-	xtraServo9.attach(SERVOPIN9);
-	xtraServo10.attach(SERVOPIN10);
-	xtraServo11.attach(SERVOPIN11);
+	///SERVOS
+	myServo1.attach(SERVOPIN7);
+	myServo2.attach(SERVOPIN8);
+	myServo3.attach(SERVOPIN9);
+	myServo4.attach(SERVOPIN10);
+	myServo5.attach(SERVOPIN11);
 
 	usbMIDI.setHandleControlChange(myControlChange);
 	usbMIDI.setHandleNoteOn(myHandleNoteOn); // don't need note off as we are just triggering a pluck
@@ -76,17 +76,17 @@ void loop()
 
 	///SERVOS
 	pwmVal26 = map(ccVal26, 0, 127, 170, 0);//adjust "to" range 10-170 to compensate for limited range of top servo
-	xtraServo7.write(pwmVal26);
+	myServo1.write(pwmVal26);
 	////
 	pwmVal27 = map(ccVal27, 0, 127, 170, 0);//adjust "to" range 10-170 to compensate for limited range of top servo
-	xtraServo8.write(pwmVal27);
+	myServo2.write(pwmVal27);
 	////
 	pwmVal28 = map(ccVal28, 0, 127, 170, 0);//adjust "to" range 10-170 to compensate for limited range of top servo
-	xtraServo9.write(pwmVal28);
+	myServo3.write(pwmVal28);
 	////
 	pwmVal29 = map(ccVal29, 0, 127, 170, 0);//adjust "to" range 10-170 to compensate for limited range of top servo
-	xtraServo10.write(pwmVal29);
+	myServo4.write(pwmVal29);
 	////
 	pwmVal30 = map(ccVal30, 0, 127, 170, 0);//adjust "to" range 10-170 to compensate for limited range of top servo
-	xtraServo11.write(pwmVal30);
+	myServo5.write(pwmVal30);
 }
