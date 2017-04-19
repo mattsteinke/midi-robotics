@@ -1,27 +1,76 @@
-int ledPin = 13;
+/*USB MIDI TO ON/OFF (TTL)
+• Uses Teensy Built-in usbMIDI library
+• Listens for 8 MIDI note on/off messages and turns SS Relays on/off
+• notesTimeout function protects the high current deviced from being left on incase a note off message is not heard
+*/
 
-void OnNoteOn(byte channel, byte note, byte velocity)
-{
-  digitalWrite(ledPin, HIGH);
-}
+// PINS
+#define LED1 13 // LED - FLASH NOTE ON/OFF(MIDI)  - for identifying that MIDI has been received
+int outPutPin[8] = {3, 4, 5, 6, 7, 8, 9, 10};
+/////////////////////////////////
+int timeOut = 5000; // Duration for out timeout function
+long noteStart[8]; // an array to keep track of note state markers
+boolean noteOn[8]; // array of note state booleans
+int chan = 1; // set MIDI channel here - replace with a channel number 1-16
 
-void OnNoteOff(byte channel, byte note, byte velocity)
-{
-  digitalWrite(ledPin, LOW);
-}
+// MIDI NOTES (INPUT)
+int theNote[8] = {36, 38, 40, 41, 43, 45, 47, 48}; // increase the array for more notes
 
 void setup()
 {
-  pinMode(ledPin, OUTPUT);
-  usbMIDI.setHandleNoteOff(OnNoteOff);
-  usbMIDI.setHandleNoteOn(OnNoteOn) ;
-  digitalWrite(ledPin, HIGH);
-  delay(1000);
-  digitalWrite(ledPin, LOW);
-  delay(1000);
+pinMode (LED1, OUTPUT);
+for (int i = 0; i < 8; i = i + 1) // increase from 8 for more outputs
+{
+pinMode (outPutPin[i], OUTPUT);
 }
-
+usbMIDI.setHandleNoteOn(myHandleNoteOn);
+usbMIDI.setHandleNoteOff(myHandleNoteOff);
+//usbMIDI.setHandleControlChange(myControlChange); // This is for VolumeCC
+}
 void loop()
 {
-  usbMIDI.read();
+usbMIDI.read(chan); // Continuously check if MIDI data has been received. Assign variable "chan" to midi channel
+notesTimeout();
 }
+///////////////////////////////// NOTE ON FUNCTION
+void myHandleNoteOn(byte channel, byte pitch, byte velocity)
+{
+for (int i = 0; i < 8; i = i + 1) // increase for more
+{
+if (pitch == theNote[i])
+{
+digitalWrite(LED1, HIGH);
+outPutPin[i] = HIGH;
+noteStart[i] = millis(); // mark the time
+noteOn[i] = true; // store the state
+}
+}
+}
+
+///////////////////////////////// MIDI NOTE OFF FUNCTION
+void myHandleNoteOff(byte channel, byte pitch, byte velocity)
+{
+for (int i = 0; i < 8; i = i + 1) // increase for more
+{
+if (pitch == theNote[i])
+{
+digitalWrite(LED1, LOW);
+outPutPin[i] = LOW;
+noteOn[myPin] = false;
+}
+
+}
+}
+///////////////////////////////// Timeout Function -- this is to prevent our output from staying on if we don't get a note off message after a certain peroid (not all midi sequencers send an "all off" message when they stop playback)
+void notesTimeout()
+{
+for(int i; i < 8; i++)
+{
+if(millis() - noteStart[i] > timOut && noteOn[i] == true)
+{
+digitalWrite(outPutPin[i], LOW);
+noteOn[i] == false;
+}
+
+}
+} 
