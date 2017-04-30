@@ -15,10 +15,10 @@ void OnNoteOn(byte channel, byte note, byte velocity)
     digitalWrite(ledPin2, HIGH);
   }
     if (note == 62) {
-    digitalWrite(ledPin2, HIGH);
+    digitalWrite(ledPin3, HIGH);
   }
     if (note == 63) {
-    digitalWrite(ledPin2, HIGH);
+    digitalWrite(ledPin4, HIGH);
   }
 }
 
@@ -31,10 +31,10 @@ void OnNoteOff(byte channel, byte note, byte velocity)
     digitalWrite(ledPin2, LOW);
   }
     if (note == 62) {
-    digitalWrite(ledPin2, LOW);
+    digitalWrite(ledPin3, LOW);
   }
     if (note == 63) {
-    digitalWrite(ledPin2, LOW);
+    digitalWrite(ledPin4, LOW);
   }
 }
 
