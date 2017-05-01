@@ -41,6 +41,9 @@ void OnNoteOff(byte channel, byte note, byte velocity)
 void setup()
 {
   pinMode(ledPin1, OUTPUT);
+  pinMode(ledPin2, OUTPUT);
+  pinMode(ledPin3, OUTPUT);
+  pinMode(ledPin4, OUTPUT);
   usbMIDI.setHandleNoteOff(OnNoteOff);
   usbMIDI.setHandleNoteOn(OnNoteOn) ;
   digitalWrite(ledPin1, HIGH);
