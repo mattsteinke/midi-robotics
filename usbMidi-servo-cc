@@ -22,11 +22,11 @@ int ccVal24;
 int servoRangeBottom = 0;
 int servoRangeTop = 180;
 
-#define SERVOPIN7 3 // MISC CC 20
-#define SERVOPIN8 2 // MISC CC 21
-#define SERVOPIN9 10// MISC CC 22
-#define SERVOPIN10 11// MISC CC 23
-#define SERVOPIN11 12// MISC CC 24
+#define SERVOPIN1 3 // CC 20
+#define SERVOPIN2 4 // CC 21
+#define SERVOPIN3 6 // CC 22
+#define SERVOPIN4 9 // CC 23
+#define SERVOPIN5 10 // CC 24
 
 void myControlChange(byte channel, byte control, byte value) //when "myControlChange" is called, flash the led and store the control change numbers into a variable
 {
@@ -60,11 +60,11 @@ void midiLedFlash()
 void setup()
 {
 	///SERVOS
-	myServo1.attach(SERVOPIN7);
-	myServo2.attach(SERVOPIN8);
-	myServo3.attach(SERVOPIN9);
-	myServo4.attach(SERVOPIN10);
-	myServo5.attach(SERVOPIN11);
+	myServo1.attach(SERVOPIN1);
+	myServo2.attach(SERVOPIN2);
+	myServo3.attach(SERVOPIN3);
+	myServo4.attach(SERVOPIN4);
+	myServo5.attach(SERVOPIN5);
 	
 	usbMIDI.setHandleControlChange(myControlChange); // Call usbMIDI callback function, "myControlChange"
 	pinMode(ledPin, OUTPUT); // midi output led
