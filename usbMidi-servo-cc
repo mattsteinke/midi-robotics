@@ -1,54 +1,54 @@
 #include <Servo.h>
 //GLOBAL
-int chan = 7;
-int ledPin = 13; //MIDI SIGNAL RECOGNIZED
+int chan = 1;
+int ledPin = 13; //MIDI SIGNAL RECOGNIZED INDICATOR
 /////5 SERVOS
 Servo myServo1;
 Servo myServo2;
 Servo myServo3;
 Servo myServo4;
 Servo myServo5;
-int pwmVal26;
-int pwmVal27;
-int pwmVal28;
-int pwmVal29;
-int pwmVal30;
-int ccVal26;
-int ccVal27;
-int ccVal28;
-int ccVal29;
-int ccVal30;
+int pwmVal20;
+int pwmVal21;
+int pwmVal22;
+int pwmVal23;
+int pwmVal24;
+int ccVal20;
+int ccVal21;
+int ccVal22;
+int ccVal23;
+int ccVal24;
 
-#define SERVOPIN7 3 // MISC CC 26
-#define SERVOPIN8 2 // MISC CC 27
-#define SERVOPIN9 10// MISC CC 28
-#define SERVOPIN10 11// MISC CC 29
-#define SERVOPIN11 12// MISC CC 30
-//#define SERVOPIN12 13// MISC CCt 31
+int servoRangeBottom = 0;
+int servoRangeTop = 180;
 
-void myControlChange(byte channel, byte control, byte value)
+#define SERVOPIN7 3 // MISC CC 20
+#define SERVOPIN8 2 // MISC CC 21
+#define SERVOPIN9 10// MISC CC 22
+#define SERVOPIN10 11// MISC CC 23
+#define SERVOPIN11 12// MISC CC 24
+
+void myControlChange(byte channel, byte control, byte value) //when "myControlChange" is called, flash the led and store the control change numbers into a variable
 {
 	midiLedFlash();
 	switch (control)
 	{
-			//////ERVO-PWM-OUTS
-		case 26: //ccSERVO26
-			ccVal26 = value;
+		case 20: // for ccSERVO20
+			ccVal20 = value;
 			break;
-		case 27: //ccSERVO27
-			ccVal27 = value;
+		case 21: // for ccSERVO21
+			ccVal21 = value;
 			break;
-		case 28: //ccSERVO28
-			ccVal28 = value;
+		case 22: // for ccSERVO22
+			ccVal22 = value;
 			break;
-		case 29: //ccSERVO29
-			ccVal29 = value;
+		case 23: // for ccSERVO23
+			ccVal23 = value;
 			break;
-		case 30: //ccSERVO30
-			ccVal30 = value;
+		case 24: // for ccSERVO24
+			ccVal24 = value;
 			break;
 	}
-
 }
 
 void midiLedFlash()
@@ -65,28 +65,26 @@ void setup()
 	myServo3.attach(SERVOPIN9);
 	myServo4.attach(SERVOPIN10);
 	myServo5.attach(SERVOPIN11);
-
-	usbMIDI.setHandleControlChange(myControlChange);
-	usbMIDI.setHandleNoteOn(myHandleNoteOn); // don't need note off as we are just triggering a pluck
+	
+	usbMIDI.setHandleControlChange(myControlChange); // Call usbMIDI callback function, "myControlChange"
 	pinMode(ledPin, OUTPUT); // midi output led
 }
 void loop()
 {
-	usbMIDI.read(chan); //read and set channel number
-
+	usbMIDI.read(chan); // read and set channel number
 	///SERVOS
-	pwmVal26 = map(ccVal26, 0, 127, 170, 0);//adjust "to" range 10-170 to compensate for limited range of top servo
-	myServo1.write(pwmVal26);
+	pwmVal20 = map(ccVal20, 0, 127, servoRangeBottom, servoRangeTop);// adjust range from midi cc (0-127) to (servoRangeBottom to servoRangeTop)
+	myServo1.write(pwmVal20);
 	////
-	pwmVal27 = map(ccVal27, 0, 127, 170, 0);//adjust "to" range 10-170 to compensate for limited range of top servo
-	myServo2.write(pwmVal27);
+	pwmVal21 = map(ccVal21, 0, 127, servoRangeBottom, servoRangeTop);
+	myServo2.write(pwmVal21);
 	////
-	pwmVal28 = map(ccVal28, 0, 127, 170, 0);//adjust "to" range 10-170 to compensate for limited range of top servo
-	myServo3.write(pwmVal28);
+	pwmVal22 = map(ccVal22, 0, 127, servoRangeBottom, servoRangeTop);
+	myServo3.write(pwmVal22);
 	////
-	pwmVal29 = map(ccVal29, 0, 127, 170, 0);//adjust "to" range 10-170 to compensate for limited range of top servo
-	myServo4.write(pwmVal29);
+	pwmVal23 = map(ccVal23, 0, 127, servoRangeBottom, servoRangeTop);
+	myServo4.write(pwmVal23);
 	////
-	pwmVal30 = map(ccVal30, 0, 127, 170, 0);//adjust "to" range 10-170 to compensate for limited range of top servo
-	myServo5.write(pwmVal30);
+	pwmVal24 = map(ccVal24, 0, 127, servoRangeBottom, servoRangeTop);
+	myServo5.write(pwmVal24);
 }
