@@ -5,7 +5,7 @@ int ledPin1 = 1;
 int ledPin2 = 2;
 int ledPin3 = 3;
 int ledPin4 = 4;
-int ledPin4 = 5;
+int ledPin5 = 5;
 
 void OnNoteOn(byte channel, byte note, byte velocity)
 {
@@ -22,7 +22,7 @@ void OnNoteOn(byte channel, byte note, byte velocity)
     digitalWrite(ledPin4, HIGH);
   }
      if (note == 64) {
-    digitalWrite(ledPin4, HIGH);
+    digitalWrite(ledPin5, HIGH);
   }
 }
 
@@ -41,7 +41,7 @@ void OnNoteOff(byte channel, byte note, byte velocity)
     digitalWrite(ledPin4, LOW);
   }
      if (note == 64) {
-    digitalWrite(ledPin4, LOW);
+    digitalWrite(ledPin5, LOW);
   }
 }
 
