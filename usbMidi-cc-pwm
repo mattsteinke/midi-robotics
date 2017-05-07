@@ -1,0 +1,51 @@
+// USB MIDI receive example, control change to control motor or led pwm
+
+int pwmPin1 = 3;
+int pwmPin2 = 4;
+int pwmPin3 = 9;
+int pwmPin4 = 10;
+int midiLed = 13;
+
+
+void myControlChange(byte channel, byte control, byte value)
+{
+  switch (control)
+  {
+    case 20://cc #
+      analogWrite(pwmPin1, value * 2);
+      break;
+    case 21:
+      analogWrite(pwmPin2, value * 2);
+      break;
+    case 22:
+      analogWrite(pwmPin3, value * 2);
+      break;
+    case 23:
+      analogWrite(pwmPin4, value * 2);
+      break;
+  }
+}
+
+
+void midiLedFlash()
+{
+  digitalWrite(midiLed, HIGH);
+  delay(1);
+  digitalWrite(midiLed, LOW);
+}
+
+void setup()
+{
+  pinMode(midiLed, OUTPUT);
+  usbMIDI.setHandleControlChange(myControlChange); // Call usbMIDI callback function, "myControlChange"
+  digitalWrite(midiLed, HIGH);//so you know that the setup has been initialized
+  delay(1000);
+  digitalWrite(midiLed, LOW);
+  delay(1000);
+}
+
+void loop()
+{
+  usbMIDI.read();
+}
+
