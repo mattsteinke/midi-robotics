@@ -9,6 +9,7 @@ int midiLed = 13;
 
 void myControlChange(byte channel, byte control, byte value)
 {
+  midiLedFlash();
   switch (control)
   {
     case 20://cc #
