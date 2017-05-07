@@ -5,6 +5,7 @@ int ledPin1 = 1;
 int ledPin2 = 2;
 int ledPin3 = 3;
 int ledPin4 = 4;
+int ledPin4 = 5;
 
 void OnNoteOn(byte channel, byte note, byte velocity)
 {
@@ -18,6 +19,9 @@ void OnNoteOn(byte channel, byte note, byte velocity)
     digitalWrite(ledPin3, HIGH);
   }
     if (note == 63) {
+    digitalWrite(ledPin4, HIGH);
+  }
+     if (note == 64) {
     digitalWrite(ledPin4, HIGH);
   }
 }
@@ -36,6 +40,9 @@ void OnNoteOff(byte channel, byte note, byte velocity)
     if (note == 63) {
     digitalWrite(ledPin4, LOW);
   }
+     if (note == 64) {
+    digitalWrite(ledPin4, LOW);
+  }
 }
 
 void setup()
@@ -44,6 +51,7 @@ void setup()
   pinMode(ledPin2, OUTPUT);
   pinMode(ledPin3, OUTPUT);
   pinMode(ledPin4, OUTPUT);
+  pinMode(ledPin5, OUTPUT);
   usbMIDI.setHandleNoteOff(OnNoteOff);
   usbMIDI.setHandleNoteOn(OnNoteOn) ;
   digitalWrite(ledPin1, HIGH);//so you know that the setup has been initialized
