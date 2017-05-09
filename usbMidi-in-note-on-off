@@ -1,62 +1,134 @@
-// USB MIDI receive example, Note on/off -> LED on/off
-// contributed by Alessandro Fasan
+// USB MIDI receive example, Note ON/OFF -> LED/Transistor ON/OFF
+//12 NOTES - ONE OCTAVE
 
-int ledPin1 = 1;
-int ledPin2 = 2;
-int ledPin3 = 3;
-int ledPin4 = 4;
-int ledPin5 = 5;
+int outPin1 = 1;
+int outPin2 = 2;
+int outPin3 = 3;
+int outPin4 = 4;
+int outPin5 = 5;
+int outPin6 = 6;
+int outPin7 = 7;
+int outPin8 = 8;
+int outPin9 = 9;
+int outPin10 = 10;
+int outPin11 = 11;
+int outPin12 = 12;
+int midiLed = 13; // LED on board flashes whenever we get any MIDI message (note on and off)
+
+void midiLedFlash()
+{
+  digitalWrite(midiLed, HIGH);
+  delay(1);
+  digitalWrite(midiLed, LOW);
+}
 
 void OnNoteOn(byte channel, byte note, byte velocity)
 {
-  if (note == 60) {
-    digitalWrite(ledPin1, HIGH);
-  }
-  if (note == 61) {
-    digitalWrite(ledPin2, HIGH);
-  }
-    if (note == 62) {
-    digitalWrite(ledPin3, HIGH);
-  }
-    if (note == 63) {
-    digitalWrite(ledPin4, HIGH);
-  }
-     if (note == 64) {
-    digitalWrite(ledPin5, HIGH);
-  }
+midiLedFlash(); // flash the LED so we know we have MIDI 
+switch (note)
+  {
+    case 60://cc #
+      digitalWrite(outPin1, HIGH);
+      break;
+    case 61:
+      digitalWrite(outPin2, HIGH);
+      break;
+    case 62:
+      digitalWrite(outPin3, HIGH);
+      break;
+    case 63:
+      digitalWrite(outPin4, HIGH);
+      break;
+    case 64:
+      digitalWrite(outPin5, HIGH);
+      break;
+    case 65:
+      digitalWrite(outPin6, HIGH);
+      break;
+    case 65:
+      digitalWrite(outPin7, HIGH);
+      break;
+    case 66:
+      digitalWrite(outPin8, HIGH);
+      break;
+    case 67:
+      digitalWrite(outPin9, HIGH);
+      break;
+    case 68:
+      digitalWrite(outPin10, HIGH);
+      break;
+    case 69:
+      digitalWrite(outPin11, HIGH);
+      break;
+    case 70:
+      digitalWrite(outPin12, HIGH);
+      break;
+  } 
 }
 
 void OnNoteOff(byte channel, byte note, byte velocity)
 {
-    if (note == 60) {
-    digitalWrite(ledPin1, LOW);
-  }
-  if (note == 61) {
-    digitalWrite(ledPin2, LOW);
-  }
-    if (note == 62) {
-    digitalWrite(ledPin3, LOW);
-  }
-    if (note == 63) {
-    digitalWrite(ledPin4, LOW);
-  }
-     if (note == 64) {
-    digitalWrite(ledPin5, LOW);
-  }
+   midiLedFlash(); // flash the LED so we know we have MIDI 
+   switch (note)
+  {
+    case 60://cc #
+      digitalWrite(outPin1, LOW);
+      break;
+    case 61:
+      digitalWrite(outPin2, LOW);
+      break;
+    case 62:
+      digitalWrite(outPin3, LOW);
+      break;
+    case 63:
+      digitalWrite(outPin4, LOW);
+      break;
+    case 64:
+      digitalWrite(outPin5, LOW);
+      break;
+    case 65:
+      digitalWrite(outPin6, LOW);
+      break;
+    case 65:
+      digitalWrite(outPin7, LOW);
+      break;
+    case 66:
+      digitalWrite(outPin8, LOW);
+      break;
+    case 67:
+      digitalWrite(outPin9, LOW);
+      break;
+    case 68:
+      digitalWrite(outPin10, LOW);
+      break;
+    case 69:
+      digitalWrite(outPin11, LOW);
+      break;
+    case 70:
+      digitalWrite(outPin12, LOW);
+      break;
+  } 
 }
 
 void setup()
 {
-  pinMode(ledPin1, OUTPUT);
-  pinMode(ledPin2, OUTPUT);
-  pinMode(ledPin3, OUTPUT);
-  pinMode(ledPin4, OUTPUT);
-  pinMode(ledPin5, OUTPUT);
+  pinMode(outPin1, OUTPUT);
+  pinMode(outPin2, OUTPUT);
+  pinMode(outPin3, OUTPUT);
+  pinMode(outPin4, OUTPUT);
+  pinMode(outPin5, OUTPUT);
+  pinMode(outPin6, OUTPUT);
+  pinMode(outPin7, OUTPUT);
+  pinMode(outPin8, OUTPUT);
+  pinMode(outPin9, OUTPUT);
+  pinMode(outPin10, OUTPUT);
+  pinMode(outPin11, OUTPUT);
+  pinMode(outPin12, OUTPUT);
+  usbMIDI.setHandleNoteOn(OnNoteOn);
   usbMIDI.setHandleNoteOff(OnNoteOff);
-  usbMIDI.setHandleNoteOn(OnNoteOn) ;
-  digitalWrite(ledPin1, HIGH);//so you know that the setup has been initialized
+  digitalWrite(midiLed, HIGH); // so you know that the setup has been initialized
   delay(1000);
-  digitalWrite(ledPin1, LOW);
+  digitalWrite(midiLed, LOW);
   delay(1000);
 }
 
