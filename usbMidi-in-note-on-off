@@ -89,22 +89,22 @@ void OnNoteOff(byte channel, byte note, byte velocity)
     case 65:
       digitalWrite(outPin6, LOW);
       break;
-    case 65:
+    case 66:
       digitalWrite(outPin7, LOW);
       break;
-    case 66:
+    case 67:
       digitalWrite(outPin8, LOW);
       break;
-    case 67:
+    case 68:
       digitalWrite(outPin9, LOW);
       break;
-    case 68:
+    case 69:
       digitalWrite(outPin10, LOW);
       break;
-    case 69:
+    case 70:
       digitalWrite(outPin11, LOW);
       break;
-    case 70:
+    case 71:
       digitalWrite(outPin12, LOW);
       break;
   } 
