@@ -45,22 +45,22 @@ switch (note)
     case 65:
       digitalWrite(outPin6, HIGH);
       break;
-    case 65:
+    case 66:
       digitalWrite(outPin7, HIGH);
       break;
-    case 66:
+    case 67:
       digitalWrite(outPin8, HIGH);
       break;
-    case 67:
+    case 68:
       digitalWrite(outPin9, HIGH);
       break;
-    case 68:
+    case 69:
       digitalWrite(outPin10, HIGH);
       break;
-    case 69:
+    case 70:
       digitalWrite(outPin11, HIGH);
       break;
-    case 70:
+    case 71:
       digitalWrite(outPin12, HIGH);
       break;
   } 
