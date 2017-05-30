@@ -28,7 +28,7 @@ int servoRangeTop = 180;
 #define SERVOPIN4 9 // CC 23
 #define SERVOPIN5 10 // CC 24
 
-void myControlChange(byte channel, byte control, byte value) //when "myControlChange" is called, flash the led and store the control change numbers into a variable
+void myControlChange(byte channel, byte control, byte value) // when "myControlChange" is called, flash the led and store the control change numbers into a variable
 {
 	midiLedFlash();
 	switch (control)
@@ -73,7 +73,7 @@ void loop()
 {
 	usbMIDI.read(chan); // read and set channel number
 	///SERVOS
-	pwmVal20 = map(ccVal20, 0, 127, servoRangeBottom, servoRangeTop);// adjust range from midi cc (0-127) to (servoRangeBottom to servoRangeTop)
+	pwmVal20 = map(ccVal20, 0, 127, servoRangeBottom, servoRangeTop); // adjust range from midi cc (0-127) to (servoRangeBottom to servoRangeTop)
 	myServo1.write(pwmVal20);
 	////
 	pwmVal21 = map(ccVal21, 0, 127, servoRangeBottom, servoRangeTop);
