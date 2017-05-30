@@ -1,29 +1,30 @@
-// Sweep
-// by BARRAGAN <http://barraganstudio.com> 
+// Sweep Servo Test
 
 #include <Servo.h> 
  
-Servo myservo;  // create servo object to control a servo 
-                // a maximum of eight servo objects can be created 
+Servo myservo1; // servo object
+               // up to eight servo objects total 
  
-int pos = 0;    // variable to store the servo position 
+int pos = 0; // store the servo position 
+int posMin = 0; // min postion
+int posMax = 180; // max position - different servos have different ranges
  
 void setup() 
 { 
-  myservo.attach(3);  // attaches the servo on pin 3 
+  myservo1.attach(3); // attaches the servo on pin 3 
 } 
  
  
 void loop() 
 { 
-  for(pos = 10; pos < 170; pos += 1)  // goes from 10 degrees to 170 degrees 
-  {                                  // in steps of 1 degree 
-    myservo.write(pos);              // tell servo to go to position in variable 'pos' 
-    delay(15);                       // waits 15ms for the servo to reach the position 
+  for(pos = posMin; pos < posMax; pos += 1) // goes from posMin degrees to posMax degrees 
+  {                                   
+    myservo1.write(pos); // update variable with postion 
+    delay(15); // waits 15ms
   } 
-  for(pos = 180; pos>=1; pos-=1)     // goes from 180 degrees to 0 degrees 
+  for(pos = posMax; pos >= posMin; pos-=1) // goes from posMax degrees to posMin degrees 
   {                                
-    myservo.write(pos);              // tell servo to go to position in variable 'pos' 
-    delay(15);                       // waits 15ms for the servo to reach the position 
+    myservo1.write(pos); // update variable with postion  
+    delay(15); // waits 15ms 
   } 
 } 
