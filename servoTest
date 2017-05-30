@@ -12,9 +12,8 @@ int posMax = 180; // max position - different servos have different ranges
 void setup() 
 { 
   myservo1.attach(3); // attaches the servo on pin 3 
-} 
- 
- 
+}  
+
 void loop() 
 { 
   for(pos = posMin; pos < posMax; pos += 1) // goes from posMin degrees to posMax degrees 
