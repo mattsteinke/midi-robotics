@@ -64,7 +64,7 @@ if (pitch == theNote[i])
 {
 digitalWrite(LED1, LOW);
 outPutPin[i] = LOW;
-noteOn[myPin] = false;
+noteOn[i] = false;
 }
 
 }
