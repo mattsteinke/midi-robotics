@@ -74,7 +74,7 @@ void notesTimeout()
 {
 for(int i; i < 8; i++)
 {
-if(millis() - noteStart[i] > timOut && noteOn[i] == true)
+if(millis() - noteStart[i] > timeOut && noteOn[i] == true)
 {
 digitalWrite(outPutPin[i], LOW);
 noteOn[i] == false;
