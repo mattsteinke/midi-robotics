@@ -1,0 +1,16 @@
+int led[] = {5, 6, 7, 8, 9, 10, 11, 12}; //array to assign 8 pins
+
+void setup() {
+
+  for (int i = 0; i < 8; i++) { //do this code block 8 times
+    pinMode(led[i], OUTPUT);
+  }
+}
+
+void loop() {
+  for (int i = 0; i < 8; i++) {
+    digitalWrite(led[i], HIGH);
+    delay(50);
+    digitalWrite(led[i], LOW);
+  }
+}
