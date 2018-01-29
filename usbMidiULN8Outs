@@ -1,0 +1,106 @@
+// USB MIDI receive example, Note ON/OFF -> LED/Transistor ON/OFF
+//8 NOTES 
+
+int outPin5 = 5; //The ULN starts at pin 5
+int outPin6 = 6;
+int outPin7 = 7;
+int outPin8 = 8;
+int outPin9 = 9;
+int outPin10 = 10;
+int outPin11 = 11;
+int outPin12 = 12;
+int midiLed = 13; // LED on board flashes whenever we get any MIDI message (note on and off)
+
+void midiLedFlash()
+{
+  digitalWrite(midiLed, HIGH);
+  delay(1);
+  digitalWrite(midiLed, LOW);
+}
+
+void OnNoteOn(byte channel, byte note, byte velocity)
+{
+  midiLedFlash(); // flash the LED so we know we have MIDI
+  switch (note)
+  { 
+    case 64:
+      digitalWrite(outPin5, HIGH);
+      break;
+    case 65:
+      digitalWrite(outPin6, HIGH);
+      break;
+    case 66:
+      digitalWrite(outPin7, HIGH);
+      break;
+    case 67:
+      digitalWrite(outPin8, HIGH);
+      break;
+    case 68:
+      digitalWrite(outPin9, HIGH);
+      break;
+    case 69:
+      digitalWrite(outPin10, HIGH);
+      break;
+    case 70:
+      digitalWrite(outPin11, HIGH);
+      break;
+    case 71:
+      digitalWrite(outPin12, HIGH);
+      break;
+  }
+}
+
+void OnNoteOff(byte channel, byte note, byte velocity)
+{
+  midiLedFlash(); // flash the LED so we know we have MIDI
+  switch (note)
+  {
+    case 64:
+      digitalWrite(outPin5, LOW);
+      break;
+    case 65:
+      digitalWrite(outPin6, LOW);
+      break;
+    case 66:
+      digitalWrite(outPin7, LOW);
+      break;
+    case 67:
+      digitalWrite(outPin8, LOW);
+      break;
+    case 68:
+      digitalWrite(outPin9, LOW);
+      break;
+    case 69:
+      digitalWrite(outPin10, LOW);
+      break;
+    case 70:
+      digitalWrite(outPin11, LOW);
+      break;
+    case 71:
+      digitalWrite(outPin12, LOW);
+      break;
+  }
+}
+
+void setup()
+{
+  pinMode(outPin5, OUTPUT);
+  pinMode(outPin6, OUTPUT);
+  pinMode(outPin7, OUTPUT);
+  pinMode(outPin8, OUTPUT);
+  pinMode(outPin9, OUTPUT);
+  pinMode(outPin10, OUTPUT);
+  pinMode(outPin11, OUTPUT);
+  pinMode(outPin12, OUTPUT);
+  usbMIDI.setHandleNoteOn(OnNoteOn);
+  usbMIDI.setHandleNoteOff(OnNoteOff);
+  digitalWrite(midiLed, HIGH); // so you know that the setup has been initialized
+  delay(1000);
+  digitalWrite(midiLed, LOW);
+  delay(1000);
+}
+
+void loop()
+{
+  usbMIDI.read();
+}
