@@ -2,31 +2,30 @@
 //GLOBAL
 int chan = 1;
 int ledPin = 13; //MIDI SIGNAL RECOGNIZED INDICATOR
-/////5 SERVOS
+
+/////4 SERVOS
 Servo myServo1;
 Servo myServo2;
 Servo myServo3;
 Servo myServo4;
-Servo myServo5;
+
 int pwmVal20;
 int pwmVal21;
 int pwmVal22;
 int pwmVal23;
-int pwmVal24;
+
 int ccVal20;
 int ccVal21;
 int ccVal22;
 int ccVal23;
-int ccVal24;
 
 int servoRangeBottom = 0;
 int servoRangeTop = 180;
 
 #define SERVOPIN1 3 // CC 20
 #define SERVOPIN2 4 // CC 21
-#define SERVOPIN3 6 // CC 22
-#define SERVOPIN4 9 // CC 23
-#define SERVOPIN5 10 // CC 24
+#define SERVOPIN3 22 // CC 22
+#define SERVOPIN4 23 // CC 23
 
 void myControlChange(byte channel, byte control, byte value) // when "myControlChange" is called, flash the led and store the control change numbers into a variable
 {
@@ -45,9 +44,6 @@ void myControlChange(byte channel, byte control, byte value) // when "myControlC
 		case 23: // for ccSERVO23
 			ccVal23 = value;
 			break;
-		case 24: // for ccSERVO24
-			ccVal24 = value;
-			break;
 	}
 }
 
@@ -64,7 +60,6 @@ void setup()
 	myServo2.attach(SERVOPIN2);
 	myServo3.attach(SERVOPIN3);
 	myServo4.attach(SERVOPIN4);
-	myServo5.attach(SERVOPIN5);
 	
 	usbMIDI.setHandleControlChange(myControlChange); // Call usbMIDI callback function, "myControlChange"
 	pinMode(ledPin, OUTPUT); // midi output led
