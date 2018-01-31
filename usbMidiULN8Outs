@@ -23,28 +23,28 @@ void OnNoteOn(byte channel, byte note, byte velocity)
   midiLedFlash(); // flash the LED so we know we have MIDI
   switch (note)
   { 
-    case 64:
+    case 48:
       digitalWrite(outPin5, HIGH);
       break;
-    case 65:
+    case 49:
       digitalWrite(outPin6, HIGH);
       break;
-    case 66:
+    case 50:
       digitalWrite(outPin7, HIGH);
       break;
-    case 67:
+    case 51:
       digitalWrite(outPin8, HIGH);
       break;
-    case 68:
+    case 52:
       digitalWrite(outPin9, HIGH);
       break;
-    case 69:
+    case 53:
       digitalWrite(outPin10, HIGH);
       break;
-    case 70:
+    case 54:
       digitalWrite(outPin11, HIGH);
       break;
-    case 71:
+    case 55:
       digitalWrite(outPin12, HIGH);
       break;
   }
@@ -92,6 +92,7 @@ void setup()
   pinMode(outPin10, OUTPUT);
   pinMode(outPin11, OUTPUT);
   pinMode(outPin12, OUTPUT);
+  pinMode(midiLed, OUTPUT);
   usbMIDI.setHandleNoteOn(OnNoteOn);
   usbMIDI.setHandleNoteOff(OnNoteOff);
   digitalWrite(midiLed, HIGH); // so you know that the setup has been initialized
