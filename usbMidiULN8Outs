@@ -23,28 +23,28 @@ void OnNoteOn(byte channel, byte note, byte velocity)
   midiLedFlash(); // flash the LED so we know we have MIDI
   switch (note)
   { 
-    case 48:
+    case 60:
       digitalWrite(outPin5, HIGH);
       break;
-    case 49:
+    case 61:
       digitalWrite(outPin6, HIGH);
       break;
-    case 50:
+    case 62:
       digitalWrite(outPin7, HIGH);
       break;
-    case 51:
+    case 63:
       digitalWrite(outPin8, HIGH);
       break;
-    case 52:
+    case 64:
       digitalWrite(outPin9, HIGH);
       break;
-    case 53:
+    case 65:
       digitalWrite(outPin10, HIGH);
       break;
-    case 54:
+    case 66:
       digitalWrite(outPin11, HIGH);
       break;
-    case 55:
+    case 67:
       digitalWrite(outPin12, HIGH);
       break;
   }
@@ -55,28 +55,28 @@ void OnNoteOff(byte channel, byte note, byte velocity)
   midiLedFlash(); // flash the LED so we know we have MIDI
   switch (note)
   {
-    case 48:
+    case 60:
       digitalWrite(outPin5, LOW);
       break;
-    case 49:
+    case 61:
       digitalWrite(outPin6, LOW);
       break;
-    case 50:
+    case 62:
       digitalWrite(outPin7, LOW);
       break;
-    case 51:
+    case 63:
       digitalWrite(outPin8, LOW);
       break;
-    case 52:
+    case 64:
       digitalWrite(outPin9, LOW);
       break;
-    case 53:
+    case 65:
       digitalWrite(outPin10, LOW);
       break;
-    case 54:
+    case 66:
       digitalWrite(outPin11, LOW);
       break;
-    case 55:
+    case 67:
       digitalWrite(outPin12, LOW);
       break;
   }
