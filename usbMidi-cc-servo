@@ -79,7 +79,5 @@ void loop()
 	////
 	pwmVal23 = map(ccVal23, 0, 127, servoRangeBottom, servoRangeTop);
 	myServo4.write(pwmVal23);
-	////
-	pwmVal24 = map(ccVal24, 0, 127, servoRangeBottom, servoRangeTop);
-	myServo5.write(pwmVal24);
+
 }
