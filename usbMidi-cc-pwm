@@ -1,9 +1,9 @@
 // USB MIDI receive example, control change to control motor or led pwm
 
-int pwmPin1 = 3;
-int pwmPin2 = 4;
-int pwmPin3 = 9;
-int pwmPin4 = 10;
+int pwmPin1 = 6;
+int pwmPin2 = 9;
+int pwmPin3 = 10;
+int pwmPin4 = 16;//ignor unless you use a second ULN
 int midiLed = 13;
 
 
